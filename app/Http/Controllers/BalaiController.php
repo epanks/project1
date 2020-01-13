@@ -15,6 +15,15 @@ class BalaiController extends Controller
     public function index($id)
     {
         $wilayah = DB::table('wilayah')->find($id);
+        $balai = DB::table('wilayah')
+            ->where('wilayah_id', $id)
+            ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
+            ->get();
+        $satker = DB::table('wilayah')
+            ->where('wilayah_id', $id)
+            ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
+            ->join('satker', 'balai.id', '=', 'satker.balai_id')
+            ->get();
         $data_rekap = DB::table('wilayah')
             ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
             ->join('satker', 'balai.id', '=', 'satker.balai_id')
@@ -26,23 +35,47 @@ class BalaiController extends Controller
         //dd($wilayah);
         //dd($data_rekap);
 
-        $airTanah = DB::table('paket')
+        $airTanah = DB::table('wilayah')
+            ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
+            ->join('satker', 'balai.id', '=', 'satker.balai_id')
+            ->join('paket', 'satker.kdsatker', '=', 'paket.kdsatker')
             ->join('tblkdoutput', 'paket.kdoutput', '=', 'tblkdoutput.kdoutput')
+            ->select('wilayah.*', 'balai.*', 'paket.*')
+            ->where('wilayah_id', $id)
             ->where('tblabat_id', '2')
             ->get();
-        $airBaku = DB::table('paket')
+
+        $airBaku = DB::table('wilayah')
+            ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
+            ->join('satker', 'balai.id', '=', 'satker.balai_id')
+            ->join('paket', 'satker.kdsatker', '=', 'paket.kdsatker')
             ->join('tblkdoutput', 'paket.kdoutput', '=', 'tblkdoutput.kdoutput')
+            ->select('wilayah.*', 'balai.*', 'paket.*')
+            ->where('wilayah_id', $id)
             ->where('tblabat_id', '3')
             ->get();
-        $perencanaan = DB::table('paket')
+
+        $perencanaan = DB::table('wilayah')
+            ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
+            ->join('satker', 'balai.id', '=', 'satker.balai_id')
+            ->join('paket', 'satker.kdsatker', '=', 'paket.kdsatker')
             ->join('tblkdoutput', 'paket.kdoutput', '=', 'tblkdoutput.kdoutput')
+            ->select('wilayah.*', 'balai.*', 'paket.*')
+            ->where('wilayah_id', $id)
             ->where('tblabat_id', '1')
             ->get();
-        $administrasi = DB::table('paket')
+
+        $administrasi = DB::table('wilayah')
+            ->join('balai', 'wilayah.id', '=', 'balai.wilayah_id')
+            ->join('satker', 'balai.id', '=', 'satker.balai_id')
+            ->join('paket', 'satker.kdsatker', '=', 'paket.kdsatker')
             ->join('tblkdoutput', 'paket.kdoutput', '=', 'tblkdoutput.kdoutput')
+            ->select('wilayah.*', 'balai.*', 'paket.*')
+            ->where('wilayah_id', $id)
             ->where('tblabat_id', '4')
             ->get();
-        return view('balai.dashboard_balai', compact('data_rekap', 'wilayah', 'airTanah', 'airBaku', 'perencanaan', 'administrasi'));
+
+        return view('balai.dashboard_balai', compact('data_rekap', 'wilayah', 'balai', 'satker', 'airTanah', 'airBaku', 'perencanaan', 'administrasi'));
     }
 
     /**
